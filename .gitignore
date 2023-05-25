@@ -1,0 +1,5 @@
+build
+bin
+tp3
+tests
+*.out

@@ -6,31 +6,6 @@
 
 #include "../include/stone.h"
 
-// Returns the outputPath based on inputPath
-char* generateOutputPath(char* inputPath) {
-    // Defines default extension to be in the end
-    const char* extension = ".out";
-
-    // Creates outputPath adding the extension in the end of the inputPath
-    char* newFullPath = malloc(strlen(inputPath) + strlen(extension) + 1);
-    strcpy(newFullPath, inputPath);
-    strcat(newFullPath, extension);
-
-    // Removes possible dirs in path
-    char* outputPath = malloc(strlen(newFullPath) + 1);
-    char* token = strtok(newFullPath, "/");
-    while (token != NULL) {
-        strcpy(outputPath, token);
-        token = strtok(NULL, "/");
-    }
-
-    // Manages leak memory due dyncamic path strings
-    outputPath = realloc(outputPath, strlen(outputPath) + 1);
-    free(newFullPath);
-
-    return outputPath;
-}
-
 // Interrupts program execution if there is an error at files
 void errorAtFiles(char* message) {
     printf("FILE ERROR - %s\n", message);
@@ -59,6 +34,31 @@ StoneArray getStonesFromFile(char* inputPath) {
     fclose(inputFile);
 
     return inputStones;
+}
+
+// Returns the outputPath based on inputPath
+char* generateOutputPath(char* inputPath) {
+    // Defines default extension to be in the end
+    const char* extension = ".out";
+
+    // Creates outputPath adding the extension in the end of the inputPath
+    char* newFullPath = malloc(strlen(inputPath) + strlen(extension) + 1);
+    strcpy(newFullPath, inputPath);
+    strcat(newFullPath, extension);
+
+    // Removes possible dirs in path
+    char* outputPath = malloc(strlen(newFullPath) + 1);
+    char* token = strtok(newFullPath, "/");
+    while (token != NULL) {
+        strcpy(outputPath, token);
+        token = strtok(NULL, "/");
+    }
+
+    // Manages leak memory due dyncamic path strings
+    outputPath = realloc(outputPath, strlen(outputPath) + 1);
+    free(newFullPath);
+
+    return outputPath;
 }
 
 // Saves all results in output file

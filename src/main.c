@@ -4,6 +4,7 @@
 #include "../include/args.h"
 #include "../include/files.h"
 #include "../include/stone.h"
+#include "../include/strategy.h"
 #include "../include/time.h"
 
 int main(int argc, char* argv[]) {
@@ -12,8 +13,23 @@ int main(int argc, char* argv[]) {
     int strategy;
     getArgs(argc, argv, &inputPath, &strategy);
 
-    // Generates outputPath from inputPath
-    char* outputPath = generateOutputPath(inputPath);
+    // Selects strategy function
+    int (*pfunction)(char*, char*);
+    switch (strategy) {
+        case 1:
+            pfunction = bruteforce;
+            break;
+        case 2:
+            pfunction = bruteforce;
+            break;
+        case 3:
+            pfunction = bruteforce;
+            break;
+        default:
+            pfunction = bruteforce;
+            strategy = 4;
+            break;
+    }
 
     // Receives inputStones and creates results array
     StoneArray inputStones = getStonesFromFile(inputPath);
@@ -22,37 +38,18 @@ int main(int argc, char* argv[]) {
     // Solves each stone
     printf("\nStrategy %d\n\n", strategy);
     for (int i = 0; i < inputStones.length; i++) {
-        // Initializes timer
+        // Finds result monitoring the elapsed time
         Time startTime = getRealTime();
-
-        // Finds result based on given strategy number
-        int result;
-        switch (strategy) {
-            case 1:
-                result = 1;
-                break;
-            case 2:
-                result = 2;
-                break;
-            case 3:
-                result = 3;
-                break;
-            default:
-                result = 0;
-                break;
-        }
-        results[i] = result;
-
-        // Finish timer
+        results[i] = solveStone(inputStones.data[i], pfunction);
         Time endTime = getRealTime();
 
-        // Prints data
-        printf("Stone %d = (%d)\n", i + 1, result);
-        // printf("%s|%s\n", inputStones.data[i].hability, inputStones.data[i].description);
+        // Prints result data
+        printf("Stone %d = (%d)\n", i + 1, results[i]);
         printf("Elapsed time = %Lf\n\n", endTime - startTime);
     }
 
-    // Saves results on output and deallocates results
+    // Saves results on output and deallocates all data
+    char* outputPath = generateOutputPath(inputPath);
     saveStonesFile(outputPath, results, inputStones.length);
     freeStoneArray(&inputStones);
     free(results);

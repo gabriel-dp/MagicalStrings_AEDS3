@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
     getArgs(argc, argv, &inputPath, &strategy);
 
     // Selects strategy function
-    int (*pfunction)(char*, char*);
+    int (*pfunction)(char*, char*, int);
     switch (strategy) {
         case 1:
             pfunction = bruteforce;

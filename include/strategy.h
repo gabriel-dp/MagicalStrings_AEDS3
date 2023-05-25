@@ -3,8 +3,9 @@
 
 #include "stone.h"
 
-int solveStone(Stone stone, int pfunction(char* substring, char* string));
-void revertString(char* string);
-int bruteforce(char* substring, char* string);
+int solveStone(Stone stone, int pfunction(char* substring, char* string, int reverse));
+char* reverseString(char* string);
+
+int bruteforce(char* substring, char* string, int reverse);
 
 #endif

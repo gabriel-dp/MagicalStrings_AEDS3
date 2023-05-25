@@ -71,8 +71,8 @@ void saveStonesFile(char* outputPath, int* results, int length) {
 
     // Adds each result in the file
     for (int i = 0; i < length; i++) {
-        if (results[i] > 0) {
-            fprintf(outputFile, "S %d\n", results[i]);
+        if (results[i] != -1) {
+            fprintf(outputFile, "S %d\n", results[i] + 1);
         } else {
             fprintf(outputFile, "N\n");
         }

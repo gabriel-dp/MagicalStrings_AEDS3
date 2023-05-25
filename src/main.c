@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
         Time endTime = getRealTime();
 
         // Prints result data
-        printf("Stone %d = (%d)\n", i + 1, results[i]);
+        printf("Stone %d = (%d)\n", i + 1, results[i] + 1);
         printf("Elapsed time = %Lf\n\n", endTime - startTime);
     }
 

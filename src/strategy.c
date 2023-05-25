@@ -12,7 +12,7 @@ int solveStone(Stone stone, int pfunction(char* substring, char* string)) {
 
     // Solve with the reverse string if did not find the result
     if (!result) {
-        revertString(stone.description);
+        revertString(stone.hability);
         result = (int)pfunction(stone.hability, stone.description);
         if (result) result = abs(result - 1 - (int)strlen(stone.description));
     }

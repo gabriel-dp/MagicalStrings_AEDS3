@@ -1,3 +1,4 @@
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -5,6 +6,7 @@
 #include "../include/files.h"
 #include "../include/stone.h"
 #include "../include/strategy.h"
+#include "../include/thread.h"
 #include "../include/time.h"
 
 int main(int argc, char* argv[]) {
@@ -35,18 +37,28 @@ int main(int argc, char* argv[]) {
     StoneArray inputStones = getStonesFromFile(inputPath);
     int* results = (int*)malloc(sizeof(int) * inputStones.length);
 
+    // Creates threads
+    pthread_t* threads = (pthread_t*)malloc(sizeof(pthread_t) * inputStones.length);
+
     // Solves each stone
     printf("\nStrategy %d\n\n", strategy);
     for (int i = 0; i < inputStones.length; i++) {
-        // Finds result monitoring the elapsed time
-        Time startTime = getRealTime();
-        results[i] = solveStone(inputStones.data[i], pfunction);
-        Time endTime = getRealTime();
+        // Defines all args for the thread
+        ThreadArgs* threadArgs = (ThreadArgs*)malloc(sizeof(ThreadArgs));
+        threadArgs->id = i;
+        threadArgs->pfunction = pfunction;
+        threadArgs->result = &(results[i]);
+        threadArgs->stone = inputStones.data[i];
 
-        // Prints result data
-        printf("Stone %d = (%d)\n", i + 1, results[i] + 1);
-        printf("Elapsed time = %Lf\n\n", endTime - startTime);
+        // Creates thread process
+        pthread_create(&threads[i], NULL, solveStoneThread, (void*)threadArgs);
     }
+
+    // Terminates threads
+    for (int i = 0; i < inputStones.length; i++) {
+        pthread_join(threads[i], NULL);
+    }
+    free(threads);
 
     // Saves results on output and deallocates all data
     char* outputPath = generateOutputPath(inputPath);

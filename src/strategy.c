@@ -36,6 +36,10 @@ char* reverseString(char* string) {
     return reverse;
 }
 
+/*--------------------------------------------------
+    Brute Force
+--------------------------------------------------*/
+
 // Finds a substring in a string using brute force
 int bruteforce(char* substring, char* string, int reverse) {
     int m = strlen(substring);
@@ -57,5 +61,59 @@ int bruteforce(char* substring, char* string, int reverse) {
         }
     }
 
+    return -1;
+}
+
+/*--------------------------------------------------
+    KMP (Knuth-Morris-Pratt)
+--------------------------------------------------*/
+
+// Computes the prefix array for the given substring.
+int* preprocessKMP(char* substring) {
+    int length = strlen(substring);
+    int* prefix = (int*)malloc(sizeof(int) * length);
+
+    int j = -1;
+    prefix[0] = j;
+
+    for (int i = 1; i < length; i++) {
+        while (j > -1 && substring[j + 1] != substring[i]) {
+            j = prefix[j];
+        }
+        if (substring[i] == substring[j + 1]) {
+            j++;
+        }
+        prefix[i] = j;
+    }
+
+    return prefix;
+}
+
+// Finds a substring in a string using KMP search
+int KMP(char* substring, char* string, int reverse) {
+    int* prefix = preprocessKMP(substring);
+    int m = strlen(substring);
+    int n = strlen(string);
+
+    int k = -1;
+    for (int i = 0; i < n; i++) {
+        while (k > -1 && substring[k + 1] != string[i]) {
+            k = prefix[k];
+        }
+        if (substring[k + 1] == string[i]) {
+            k++;
+            while (i >= n - 1 && substring[k + 1] == string[(i + 1) % n]) {
+                i++;
+                k++;
+            }
+        }
+        if (k == m - 1) {
+            free(prefix);
+            if (reverse) return i % n;
+            return (i - k) % n;
+        }
+    }
+
+    free(prefix);
     return -1;
 }

@@ -1,5 +1,6 @@
 #include "../include/strategy.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -115,5 +116,54 @@ int KMP(char* substring, char* string, int reverse) {
     }
 
     free(prefix);
+    return -1;
+}
+
+/*--------------------------------------------------
+    BMH (Boyer-Moore-Horspool)
+--------------------------------------------------*/
+
+// Preprocess shift of each char in the alphabet for BMH search
+int* preprocessBMH(char* substring) {
+    const int ALPHABET_CHARS = 256;
+    int* shift = (int*)malloc(sizeof(int) * ALPHABET_CHARS);
+
+    int length = strlen(substring);
+
+    for (int i = 0; i < ALPHABET_CHARS; i++) {
+        shift[i] = length;
+    }
+
+    for (int i = 1; i < length; i++) {
+        shift[(int)substring[i - 1]] = length - i;
+    }
+
+    return shift;
+}
+
+// Finds a substring in a string using BMH search
+int BMH(char* substring, char* string, int reverse) {
+    int* shift = preprocessBMH(substring);
+    int m = strlen(substring);
+    int n = strlen(string);
+
+    int i = m;
+    int k, j;
+    while (i <= n) {
+        k = i;
+        j = m;
+        while (string[k - 1] == substring[j - 1] && j > 0) {
+            k--;
+            j--;
+        }
+        if (j == 0) {
+            free(shift);
+            if (reverse) return k - 1 + m;
+            return k;
+        }
+        i += shift[(int)string[i - 1]];
+    }
+
+    free(shift);
     return -1;
 }

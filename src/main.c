@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
             pfunction = KMP;
             break;
         case 2:
-            pfunction = bruteforce;
+            pfunction = BMH;
             break;
         case 3:
             pfunction = bruteforce;

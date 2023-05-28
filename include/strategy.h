@@ -11,4 +11,7 @@ int bruteforce(char* substring, char* string, int reverse);
 int* preprocessKMP(char* substring);
 int KMP(char* substring, char* string, int reverse);
 
+int* preprocessBMH(char* substring);
+int BMH(char* substring, char* string, int reverse);
+
 #endif

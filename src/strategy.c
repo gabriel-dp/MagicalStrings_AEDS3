@@ -131,7 +131,7 @@ int* preprocessBMH(char* substring, int length) {
         shift[i] = length;
     }
 
-    for (int i = 1; i < length; i++) {
+    for (int i = length; i > 0; i--) {
         shift[(int)substring[i - 1]] = length - i;
     }
 
@@ -140,27 +140,35 @@ int* preprocessBMH(char* substring, int length) {
 
 // Finds a substring in a string using BMH search
 int BMH(char* substring, char* string, int reverse) {
-    int i, j, k;
     int m = strlen(substring);
     int n = strlen(string);
 
     int* shift = preprocessBMH(substring, m);
 
+    int i, j, k;
+    int circular = 0;
+
     i = m;
-    while (i <= n) {
+    do {
         k = i;
         j = m;
-        while (string[k - 1] == substring[j - 1] && j > 0) {
+        while (string[(k - 1) % n] == substring[j - 1] && j > 0) {
             k--;
             j--;
         }
         if (j == 0) {
             free(shift);
-            if (reverse) return k - 1 + m;
+            if (reverse) return (k - 1 + m) % n;
             return k;
         }
         i += shift[(int)string[i - 1]];
-    }
+        if (i > n) {
+            if (k == 0)
+                circular = 1;
+            else
+                circular = !circular;
+        }
+    } while (i <= n || circular == 1);
 
     free(shift);
     return -1;

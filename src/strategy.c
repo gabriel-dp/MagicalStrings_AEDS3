@@ -46,9 +46,9 @@ int bruteforce(char* substring, char* string, int reverse) {
     int m = strlen(substring);
     int n = strlen(string);
 
-    int i, j;
+    int i, j, match;
     for (i = 0; i < n; i++) {
-        int match = 1;
+        match = 1;
         for (j = 0; j < m; j++) {
             if (substring[j] != string[(j + i) % n]) {
                 match = 0;
@@ -56,8 +56,7 @@ int bruteforce(char* substring, char* string, int reverse) {
             }
         }
         if (match) {
-            if (reverse)
-                return (i + j - 1) % n;
+            if (reverse) return (i + j - 1) % n;
             return i;
         }
     }
@@ -69,9 +68,8 @@ int bruteforce(char* substring, char* string, int reverse) {
     KMP (Knuth-Morris-Pratt)
 --------------------------------------------------*/
 
-// Computes the prefix array for the given substring.
-int* preprocessKMP(char* substring) {
-    int length = strlen(substring);
+// Preprocess the prefixes array for the given substring
+int* preprocessKMP(char* substring, int length) {
     int* prefix = (int*)malloc(sizeof(int) * length);
 
     int j = -1;
@@ -92,9 +90,10 @@ int* preprocessKMP(char* substring) {
 
 // Finds a substring in a string using KMP search
 int KMP(char* substring, char* string, int reverse) {
-    int* prefix = preprocessKMP(substring);
     int m = strlen(substring);
     int n = strlen(string);
+
+    int* prefix = preprocessKMP(substring, m);
 
     int k = -1;
     for (int i = 0; i < n; i++) {
@@ -124,11 +123,9 @@ int KMP(char* substring, char* string, int reverse) {
 --------------------------------------------------*/
 
 // Preprocess shift of each char in the alphabet for BMH search
-int* preprocessBMH(char* substring) {
+int* preprocessBMH(char* substring, int length) {
     const int ALPHABET_CHARS = 256;
     int* shift = (int*)malloc(sizeof(int) * ALPHABET_CHARS);
-
-    int length = strlen(substring);
 
     for (int i = 0; i < ALPHABET_CHARS; i++) {
         shift[i] = length;
@@ -143,12 +140,13 @@ int* preprocessBMH(char* substring) {
 
 // Finds a substring in a string using BMH search
 int BMH(char* substring, char* string, int reverse) {
-    int* shift = preprocessBMH(substring);
+    int i, j, k;
     int m = strlen(substring);
     int n = strlen(string);
 
-    int i = m;
-    int k, j;
+    int* shift = preprocessBMH(substring, m);
+
+    i = m;
     while (i <= n) {
         k = i;
         j = m;

@@ -173,3 +173,39 @@ int BMH(char* substring, char* string, int reverse) {
     free(shift);
     return -1;
 }
+
+/*--------------------------------------------------
+    Shift-And
+--------------------------------------------------*/
+
+// Preprocess the masks of each char in substring for Shift-And search
+unsigned int* preprocessShiftAND(char* substring, int length) {
+    const int ALPHABET_CHARS = 256;
+    unsigned int* masks = (unsigned int*)calloc(ALPHABET_CHARS, sizeof(unsigned int));
+
+    for (int i = 0; i < length; i++) {
+        masks[(int)substring[i]] += 1 << i;
+    }
+
+    return masks;
+}
+
+// Finds a substring in a string using Shift-And search
+int shiftAND(char* substring, char* string, int reverse) {
+    int m = strlen(substring);
+    int n = strlen(string);
+
+    unsigned int* masks = preprocessShiftAND(substring, m);
+
+    unsigned int r = 0;
+    for (int i = 0; i < n; i++) {
+        r = ((r >> 1) | (1 << (m - 1))) & masks[(int)string[i]];
+
+        if ((r & 1) != 0) {
+            if (reverse) return i - m + 1;
+            return i;
+        }
+    }
+
+    return -1;
+}

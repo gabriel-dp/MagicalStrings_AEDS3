@@ -23,7 +23,7 @@ int main(int argc, char* argv[]) {
             pfunction = BMH;
             break;
         case 3:
-            pfunction = bruteforce;
+            pfunction = shiftAND;
             break;
         default:
             pfunction = bruteforce;

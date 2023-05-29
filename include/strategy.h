@@ -8,4 +8,13 @@ char* reverseString(char* string);
 
 int bruteforce(char* substring, char* string, int reverse);
 
+int* preprocessKMP(char* substring, int length);
+int KMP(char* substring, char* string, int reverse);
+
+int* preprocessBMH(char* substring, int length);
+int BMH(char* substring, char* string, int reverse);
+
+unsigned int* preprocessShiftAND(char* substring, int length);
+int shiftAND(char* substring, char* string, int reverse);
+
 #endif

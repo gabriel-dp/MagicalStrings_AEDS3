@@ -19,13 +19,13 @@ int main(int argc, char* argv[]) {
     int (*pfunction)(char*, char*, int);
     switch (strategy) {
         case 1:
-            pfunction = bruteforce;
+            pfunction = KMP;
             break;
         case 2:
-            pfunction = bruteforce;
+            pfunction = BMH;
             break;
         case 3:
-            pfunction = bruteforce;
+            pfunction = shiftAND;
             break;
         default:
             pfunction = bruteforce;

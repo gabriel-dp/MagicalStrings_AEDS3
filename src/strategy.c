@@ -1,5 +1,6 @@
 #include "../include/strategy.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -36,14 +37,18 @@ char* reverseString(char* string) {
     return reverse;
 }
 
+/*----------------------------------------
+    Brute Force
+----------------------------------------*/
+
 // Finds a substring in a string using brute force
 int bruteforce(char* substring, char* string, int reverse) {
     int m = strlen(substring);
     int n = strlen(string);
 
-    int i, j;
+    int i, j, match;
     for (i = 0; i < n; i++) {
-        int match = 1;
+        match = 1;
         for (j = 0; j < m; j++) {
             if (substring[j] != string[(j + i) % n]) {
                 match = 0;
@@ -51,9 +56,162 @@ int bruteforce(char* substring, char* string, int reverse) {
             }
         }
         if (match) {
-            if (reverse)
-                return (i + j - 1) % n;
+            if (reverse) return (i + j - 1) % n;
             return i;
+        }
+    }
+
+    return -1;
+}
+
+/*----------------------------------------
+    KMP (Knuth-Morris-Pratt)
+----------------------------------------*/
+
+// Preprocess the prefixes array for the given substring
+int* preprocessKMP(char* substring, int length) {
+    int* prefix = (int*)malloc(sizeof(int) * length);
+
+    int j = -1;
+    prefix[0] = j;
+
+    for (int i = 1; i < length; i++) {
+        while (j > -1 && substring[j + 1] != substring[i]) {
+            j = prefix[j];
+        }
+        if (substring[i] == substring[j + 1]) {
+            j++;
+        }
+        prefix[i] = j;
+    }
+
+    return prefix;
+}
+
+// Finds a substring in a string using KMP search
+int KMP(char* substring, char* string, int reverse) {
+    int m = strlen(substring);
+    int n = strlen(string);
+
+    int* prefix = preprocessKMP(substring, m);
+
+    int k = -1;
+    for (int i = 0; i < n; i++) {
+        while (k > -1 && substring[k + 1] != string[i]) {
+            k = prefix[k];
+        }
+        if (substring[k + 1] == string[i]) {
+            k++;
+            if (i >= n - 1) {
+                while (substring[k + 1] == string[(i + 1) % n]) {
+                    i++;
+                    k++;
+                }
+            }
+        }
+        if (k == m - 1) {
+            free(prefix);
+            if (reverse) return i % n;
+            return (i - k) % n;
+        }
+    }
+
+    free(prefix);
+    return -1;
+}
+
+/*----------------------------------------
+    BMH (Boyer-Moore-Horspool)
+----------------------------------------*/
+
+// Preprocess shift of each char in the alphabet for BMH search
+int* preprocessBMH(char* substring, int length) {
+    const int ALPHABET_CHARS = 256;
+    int* shift = (int*)malloc(sizeof(int) * ALPHABET_CHARS);
+
+    for (int i = 0; i < ALPHABET_CHARS; i++) {
+        shift[i] = length;
+    }
+
+    for (int i = length; i > 0; i--) {
+        shift[(int)substring[i - 1]] = length - i;
+    }
+
+    return shift;
+}
+
+// Finds a substring in a string using BMH search
+int BMH(char* substring, char* string, int reverse) {
+    int m = strlen(substring);
+    int n = strlen(string);
+
+    int* shift = preprocessBMH(substring, m);
+
+    int i, j, k;
+    int circular = 0;
+
+    i = m;
+    do {
+        k = i;
+        j = m;
+        while (string[(k - 1) % n] == substring[j - 1] && j > 0) {
+            k--;
+            j--;
+        }
+        if (j == 0) {
+            free(shift);
+            if (reverse) return (k - 1 + m) % n;
+            return k;
+        }
+        i += shift[(int)string[i - 1]];
+        if (i > n) {
+            if (k == 0)
+                circular = 1;
+            else
+                circular = !circular;
+        }
+    } while (i <= n || circular == 1);
+
+    free(shift);
+    return -1;
+}
+
+/*----------------------------------------
+    Shift-And
+----------------------------------------*/
+
+// Preprocess the masks of each char in substring for Shift-And search
+unsigned int* preprocessShiftAND(char* substring, int length) {
+    const int ALPHABET_CHARS = 256;
+    unsigned int* masks = (unsigned int*)calloc(ALPHABET_CHARS, sizeof(unsigned int));
+
+    for (int i = 0; i < length; i++) {
+        masks[(int)substring[i]] += (1 << (length - i - 1));
+    }
+
+    return masks;
+}
+
+// Finds a substring in a string using Shift-And search
+int shiftAND(char* substring, char* string, int reverse) {
+    int m = strlen(substring);
+    int n = strlen(string);
+
+    unsigned int* masks = preprocessShiftAND(substring, m);
+
+    unsigned int r = 0;
+    for (int i = 0; i < n; i++) {
+        do {
+            r = ((r >> 1) | (1 << (m - 1))) & masks[(int)string[i % n]];
+            if (i + 1 >= n) {
+                i++;
+            }
+        } while (i >= n && ((r | 0) != 0) && ((r | 0) != (1 << (i - 1))) && ((r & 1) == 0));
+
+        if ((r & 1) != 0) {
+            if (i >= n) i--;
+            if (reverse) return i % n;
+            return (i - m + 1) % n;
         }
     }
 

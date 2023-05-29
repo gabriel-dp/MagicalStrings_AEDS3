@@ -1,4 +1,3 @@
-#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -18,18 +17,18 @@ int main(int argc, char* argv[]) {
     // Selects strategy function
     int (*pfunction)(char*, char*, int);
     switch (strategy) {
-        case 1:
+        case KMP_STRATEGY:
             pfunction = KMP;
             break;
-        case 2:
+        case BMH_STRATEGY:
             pfunction = BMH;
             break;
-        case 3:
+        case SHIFTAND_STRATEGY:
             pfunction = shiftAND;
             break;
         default:
+            strategy = BRUTEFORCE_STRATEGY;
             pfunction = bruteforce;
-            strategy = 4;
             break;
     }
 
@@ -37,32 +36,15 @@ int main(int argc, char* argv[]) {
     StoneArray inputStones = getStonesFromFile(inputPath);
     int* results = (int*)malloc(sizeof(int) * inputStones.length);
 
-    // Creates threads
-    pthread_t* threads = (pthread_t*)malloc(sizeof(pthread_t) * inputStones.length);
-
-    // Solves each stone
+    // Solves stone array
     printf("\nStrategy %d\n\n", strategy);
-    for (int i = 0; i < inputStones.length; i++) {
-        // Defines all args for the thread
-        ThreadArgs* threadArgs = (ThreadArgs*)malloc(sizeof(ThreadArgs));
-        threadArgs->id = i;
-        threadArgs->pfunction = pfunction;
-        threadArgs->result = &(results[i]);
-        threadArgs->stone = inputStones.data[i];
+    solveStoneArray(&inputStones, results, pfunction);
 
-        // Creates thread process
-        pthread_create(&threads[i], NULL, solveStoneThread, (void*)threadArgs);
-    }
-
-    // Terminates threads
-    for (int i = 0; i < inputStones.length; i++) {
-        pthread_join(threads[i], NULL);
-    }
-    free(threads);
-
-    // Saves results on output and deallocates all data
+    // Saves results on output
     char* outputPath = generateOutputPath(inputPath);
     saveStonesFile(outputPath, results, inputStones.length);
+
+    // Deallocates all data
     freeStoneArray(&inputStones);
     free(results);
     free(outputPath);

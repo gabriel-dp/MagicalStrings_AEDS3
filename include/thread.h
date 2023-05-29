@@ -2,14 +2,17 @@
 #define THREAD_H
 
 #include "stone.h"
+#include "time.h"
 
 typedef struct {
     int id;
-    int* result;
+    Stone* stone;
     int (*pfunction)(char*, char*, int);
-    Stone stone;
+    int* result;
+    Time elapsedTime;
 } ThreadArgs;
 
-void* solveStoneThread(void* threadArgs);
+void solveStoneArray(StoneArray* array, int* results, int pfunction(char* substring, char* string, int reverse));
+void* stoneThread(void* threadArgs);
 
 #endif

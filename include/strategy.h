@@ -3,6 +3,13 @@
 
 #include "stone.h"
 
+enum strategy {
+    KMP_STRATEGY = 1,
+    BMH_STRATEGY,
+    SHIFTAND_STRATEGY,
+    BRUTEFORCE_STRATEGY
+};
+
 int solveStone(Stone stone, int pfunction(char* substring, char* string, int reverse));
 char* reverseString(char* string);
 

@@ -209,11 +209,13 @@ int shiftAND(char* substring, char* string, int reverse) {
         } while (i >= n && (r != 0) && (r != (1 << (m - 1))) && ((r & 1) == 0));
 
         if ((r & 1) != 0) {
+            free(masks);
             if (i >= n) i--;
             if (reverse) return i % n;
             return (i - m + 1) % n;
         }
     }
 
+    free(masks);
     return -1;
 }

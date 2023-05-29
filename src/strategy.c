@@ -206,7 +206,7 @@ int shiftAND(char* substring, char* string, int reverse) {
             if (i + 1 >= n) {
                 i++;
             }
-        } while (i >= n && (r != 0) && (r != (1 << (m - 1))) && ((r & 1) == 0));
+        } while (i >= n && (r != 0) && (i % n == 0 || (r != (1 << (m - 1)))) && ((r & 1) == 0));
 
         if ((r & 1) != 0) {
             free(masks);

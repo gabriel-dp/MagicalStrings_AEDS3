@@ -184,7 +184,7 @@ unsigned int* preprocessShiftAND(char* substring, int length) {
     unsigned int* masks = (unsigned int*)calloc(ALPHABET_CHARS, sizeof(unsigned int));
 
     for (int i = 0; i < length; i++) {
-        masks[(int)substring[i]] += 1 << i;
+        masks[(int)substring[i]] += (1 << (length - i - 1));
     }
 
     return masks;
@@ -199,11 +199,17 @@ int shiftAND(char* substring, char* string, int reverse) {
 
     unsigned int r = 0;
     for (int i = 0; i < n; i++) {
-        r = ((r >> 1) | (1 << (m - 1))) & masks[(int)string[i]];
+        do {
+            r = ((r >> 1) | (1 << (m - 1))) & masks[(int)string[i % n]];
+            if (i + 1 >= n) {
+                i++;
+            }
+        } while (i >= n && ((r | 0) != 0) && ((r & 1) == 0));
 
         if ((r & 1) != 0) {
-            if (reverse) return i - m + 1;
-            return i;
+            if (i >= n) i--;
+            if (reverse) return i % n;
+            return (i - m + 1) % n;
         }
     }
 

@@ -133,7 +133,7 @@ int* preprocessBMH(char* substring, int length) {
         shift[i] = length;
     }
 
-    for (int i = length; i > 0; i--) {
+    for (int i = 1; i < length; i++) {
         shift[(int)substring[i - 1]] = length - i;
     }
 
@@ -148,7 +148,7 @@ int BMH(char* substring, char* string, int reverse) {
     int* shift = preprocessBMH(substring, m);
 
     int i, j, k;
-    int circular = 0;
+    int try = 0;
 
     i = m;
     do {
@@ -163,14 +163,11 @@ int BMH(char* substring, char* string, int reverse) {
             if (reverse) return (k - 1 + m) % n;
             return k;
         }
-        i += shift[(int)string[i - 1]];
+        i += shift[(int)string[(i - 1) % n]];
         if (i > n) {
-            if (k == 0)
-                circular = 1;
-            else
-                circular = !circular;
+            try++;
         }
-    } while (i <= n || circular == 1);
+    } while (i <= n || try <= 2);
 
     free(shift);
     return -1;
@@ -206,14 +203,16 @@ int shiftAND(char* substring, char* string, int reverse) {
             if (i + 1 >= n) {
                 i++;
             }
-        } while (i >= n && (r != 0) && (r != (1 << (m - 1))) && ((r & 1) == 0));
+        } while (i >= n && (r != 0) && (i % n == 0 || (r != (1 << (m - 1)))) && ((r & 1) == 0));
 
         if ((r & 1) != 0) {
+            free(masks);
             if (i >= n) i--;
             if (reverse) return i % n;
             return (i - m + 1) % n;
         }
     }
 
+    free(masks);
     return -1;
 }

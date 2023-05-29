@@ -37,9 +37,9 @@ char* reverseString(char* string) {
     return reverse;
 }
 
-/*--------------------------------------------------
+/*----------------------------------------
     Brute Force
---------------------------------------------------*/
+----------------------------------------*/
 
 // Finds a substring in a string using brute force
 int bruteforce(char* substring, char* string, int reverse) {
@@ -64,9 +64,9 @@ int bruteforce(char* substring, char* string, int reverse) {
     return -1;
 }
 
-/*--------------------------------------------------
+/*----------------------------------------
     KMP (Knuth-Morris-Pratt)
---------------------------------------------------*/
+----------------------------------------*/
 
 // Preprocess the prefixes array for the given substring
 int* preprocessKMP(char* substring, int length) {
@@ -102,9 +102,11 @@ int KMP(char* substring, char* string, int reverse) {
         }
         if (substring[k + 1] == string[i]) {
             k++;
-            while (i >= n - 1 && substring[k + 1] == string[(i + 1) % n]) {
-                i++;
-                k++;
+            if (i >= n - 1) {
+                while (substring[k + 1] == string[(i + 1) % n]) {
+                    i++;
+                    k++;
+                }
             }
         }
         if (k == m - 1) {
@@ -118,9 +120,9 @@ int KMP(char* substring, char* string, int reverse) {
     return -1;
 }
 
-/*--------------------------------------------------
+/*----------------------------------------
     BMH (Boyer-Moore-Horspool)
---------------------------------------------------*/
+----------------------------------------*/
 
 // Preprocess shift of each char in the alphabet for BMH search
 int* preprocessBMH(char* substring, int length) {
@@ -174,9 +176,9 @@ int BMH(char* substring, char* string, int reverse) {
     return -1;
 }
 
-/*--------------------------------------------------
+/*----------------------------------------
     Shift-And
---------------------------------------------------*/
+----------------------------------------*/
 
 // Preprocess the masks of each char in substring for Shift-And search
 unsigned int* preprocessShiftAND(char* substring, int length) {

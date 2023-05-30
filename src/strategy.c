@@ -146,14 +146,12 @@ int BMH(char* substring, char* string, int reverse) {
 
     int* shift = preprocessBMH(substring, m);
 
-    int i, j, k;
     int try = 0;
-
-    i = m;
+    int i = m, j, k;
     do {
         k = i;
         j = m;
-        while (string[(k - 1) % n] == substring[j - 1] && j > 0) {
+        while (j > 0 && k > 0 && string[(k - 1) % n] == substring[j - 1]) {
             k--;
             j--;
         }

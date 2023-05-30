@@ -14,10 +14,8 @@ void solveStoneArray(StoneArray* array, int* results, int pfunction(char* substr
     pthread_t* threads = (pthread_t*)malloc(sizeof(pthread_t) * array->length);
     ThreadArgs* threadsArgs = (ThreadArgs*)malloc(sizeof(ThreadArgs) * array->length);
 
-    // Initializes pthreads
     for (int i = 0; i < array->length; i++) {
         // Defines all args for the thread
-        threadsArgs[i].id = i;
         threadsArgs[i].stone = &(array->data[i]);
         threadsArgs[i].pfunction = pfunction;
         threadsArgs[i].result = &(results[i]);

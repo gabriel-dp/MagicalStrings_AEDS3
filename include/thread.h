@@ -5,7 +5,6 @@
 #include "time.h"
 
 typedef struct {
-    int id;
     Stone* stone;
     int (*pfunction)(char*, char*, int);
     int* result;

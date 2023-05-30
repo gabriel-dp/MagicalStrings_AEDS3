@@ -31,13 +31,11 @@ int main(int argc, char* argv[]) {
             pfunction = bruteforce;
             break;
     }
+    printf("\nStrategy %d\n\n", strategy);
 
     // Receives inputStones and creates results array
     StoneArray inputStones = getStonesFromFile(inputPath);
     int* results = (int*)malloc(sizeof(int) * inputStones.length);
-
-    // Solves stone array
-    printf("\nStrategy %d\n\n", strategy);
     solveStoneArray(&inputStones, results, pfunction);
 
     // Saves results on output

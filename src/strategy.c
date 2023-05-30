@@ -46,16 +46,13 @@ int bruteforce(char* substring, char* string, int reverse) {
     int m = strlen(substring);
     int n = strlen(string);
 
-    int i, j, match;
+    int i, j;
     for (i = 0; i < n; i++) {
-        match = 1;
         for (j = 0; j < m; j++) {
-            if (substring[j] != string[(j + i) % n]) {
-                match = 0;
-                break;
-            }
+            if (substring[j] != string[(j + i) % n]) break;
         }
-        if (match) {
+
+        if (j == m) {
             if (reverse) return (i + j - 1) % n;
             return i;
         }
@@ -100,6 +97,7 @@ int KMP(char* substring, char* string, int reverse) {
         while (k > -1 && substring[k + 1] != string[i]) {
             k = prefix[k];
         }
+
         if (substring[k + 1] == string[i]) {
             k++;
             if (i >= n - 1) {
@@ -109,6 +107,7 @@ int KMP(char* substring, char* string, int reverse) {
                 }
             }
         }
+
         if (k == m - 1) {
             free(prefix);
             if (reverse) return i % n;
@@ -147,25 +146,27 @@ int BMH(char* substring, char* string, int reverse) {
 
     int* shift = preprocessBMH(substring, m);
 
-    int try = 0;
+    int fails = 0;
     int i = m, j, k;
-    do {
+    while (i <= n || fails <= 2) {
         k = i;
         j = m;
         while (j > 0 && k > 0 && string[(k - 1) % n] == substring[j - 1]) {
             k--;
             j--;
         }
+
         if (j == 0) {
             free(shift);
             if (reverse) return (k - 1 + m) % n;
             return k;
         }
+
         i += shift[(int)string[(i - 1) % n]];
         if (i > n) {
-            try++;
+            fails++;
         }
-    } while (i <= n || try <= 2);
+    }
 
     free(shift);
     return -1;

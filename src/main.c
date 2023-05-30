@@ -16,27 +16,27 @@ int main(int argc, char* argv[]) {
     // Selects strategy function
     int (*pfunction)(char*, char*, int);
     switch (strategy) {
-        case 1:
+        case KMP_STRATEGY:
             pfunction = KMP;
             break;
-        case 2:
+        case BMH_STRATEGY:
             pfunction = BMH;
             break;
-        case 3:
+        case SHIFTAND_STRATEGY:
             pfunction = shiftAND;
             break;
         default:
+            strategy = BRUTEFORCE_STRATEGY;
             pfunction = bruteforce;
-            strategy = 4;
             break;
     }
+    printf("\nStrategy %d\n\n", strategy);
 
     // Receives inputStones and creates results array
     StoneArray inputStones = getStonesFromFile(inputPath);
     int* results = (int*)malloc(sizeof(int) * inputStones.length);
 
     // Solves each stone
-    printf("\nStrategy %d\n\n", strategy);
     for (int i = 0; i < inputStones.length; i++) {
         // Finds result monitoring the elapsed time
         Time startTime = getRealTime();

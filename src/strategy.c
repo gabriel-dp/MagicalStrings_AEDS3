@@ -8,16 +8,16 @@
 
 // Try to find the solution with the given strategy
 int solveStone(Stone stone, int pfunction(char* substring, char* string, int reverse)) {
-    // Solve with the normal strings
-    int result = pfunction(stone.hability, stone.description, 0);
+    // Solve with the normal string
+    int normalResult = pfunction(stone.hability, stone.description, 0);
 
-    // Solve with the reverse substring if did not found the result
-    if (result == -1) {
-        char* reverseHability = reverseString(stone.hability);
-        result = pfunction(reverseHability, stone.description, 1);
-        free(reverseHability);
-    }
+    // Solve with the reverse string
+    char* reverseHability = reverseString(stone.hability);
+    int reverseResult = pfunction(reverseHability, stone.description, 1);
+    free(reverseHability);
 
+    // Returns the smaller valid result
+    int result = (normalResult == -1 || (reverseResult != -1 && reverseResult < normalResult)) ? reverseResult : normalResult;
     return result;
 }
 
@@ -125,11 +125,10 @@ int KMP(char* substring, char* string, int reverse) {
 
 // Preprocess shift of each char in the alphabet for BMH search
 int* preprocessBMH(char* substring, int length) {
-    const int ALPHABET_CHARS = 256;
     int* shift = (int*)malloc(sizeof(int) * ALPHABET_CHARS);
 
     for (int i = 0; i < ALPHABET_CHARS; i++) {
-        shift[i] = length;
+        shift[ALPHABET_START + i] = length;
     }
 
     for (int i = 1; i < length; i++) {
@@ -177,12 +176,11 @@ int BMH(char* substring, char* string, int reverse) {
 ----------------------------------------*/
 
 // Preprocess the masks of each char in substring for Shift-And search
-unsigned int* preprocessShiftAND(char* substring, int length) {
-    const int ALPHABET_CHARS = 256;
-    unsigned int* masks = (unsigned int*)calloc(ALPHABET_CHARS, sizeof(unsigned int));
+unsigned __int128* preprocessShiftAND(char* substring, int length) {
+    unsigned __int128* masks = (unsigned __int128*)calloc(ALPHABET_CHARS, sizeof(unsigned __int128));
 
     for (int i = 0; i < length; i++) {
-        masks[(int)substring[i]] += (1 << (length - i - 1));
+        masks[((int)substring[i]) - ALPHABET_START] += (1 << (length - i - 1));
     }
 
     return masks;
@@ -193,12 +191,12 @@ int shiftAND(char* substring, char* string, int reverse) {
     int m = strlen(substring);
     int n = strlen(string);
 
-    unsigned int* masks = preprocessShiftAND(substring, m);
+    unsigned __int128* masks = preprocessShiftAND(substring, m);
 
-    unsigned int r = 0;
+    unsigned __int128 r = 0;
     for (int i = 0; i < n; i++) {
         do {
-            r = ((r >> 1) | (1 << (m - 1))) & masks[(int)string[i % n]];
+            r = ((r >> 1) | (1 << (m - 1))) & masks[((int)string[i % n]) - ALPHABET_START];
             if (i + 1 >= n) {
                 i++;
             }

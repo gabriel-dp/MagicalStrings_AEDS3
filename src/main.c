@@ -45,7 +45,8 @@ int main(int argc, char* argv[]) {
 
         // Prints result data
         printf("Stone %d = (%d)\n", i + 1, results[i] + 1);
-        printf("Elapsed time = %Lf\n\n", endTime - startTime);
+        printElapsedTime(startTime, endTime);
+        prnitf("\n\n");
     }
 
     // Saves results on output and deallocates all data

@@ -14,3 +14,8 @@ Time getRealTime() {
 
     return timeNow;
 }
+
+// Prints the elapsed time of given start and end times
+void printElapsedTime(Time start, Time end) {
+    printf("Elapsed time = %Lf", end - start);
+}

@@ -29,7 +29,9 @@ void solveStoneArray(StoneArray* array, int* results, int pfunction(char* substr
         pthread_join(threads[i], NULL);
 
         // Prints result data
-        printf("Stone %d = (%d)\nElapsed time = %Lf\n\n", i + 1, results[i] + 1, threadsArgs[i].elapsedTime);
+        printf("Stone %d = (%d)\n", i + 1, results[i] + 1);
+        printElapsedTime(threadsArgs[i].startTime, threadsArgs[i].endTime);
+        printf("\n\n");
     }
 
     // Deallocates threads and threadsArgs
@@ -42,13 +44,10 @@ void* stoneThread(void* threadArgs) {
     // Converts args to ThreadArgs type
     ThreadArgs* args = (ThreadArgs*)threadArgs;
 
-    // Finds result monitoring the elapsed time
-    Time startTime = getRealTime();
+    // Finds result and returns the elapsed time
+    args->startTime = getRealTime();
     *(args->result) = solveStone(*(args->stone), args->pfunction);
-    Time endTime = getRealTime();
-
-    // Returns elapsed time
-    args->elapsedTime = endTime - startTime;
+    args->endTime = getRealTime();
 
     return NULL;
 }

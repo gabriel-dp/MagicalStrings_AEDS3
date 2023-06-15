@@ -1,5 +1,6 @@
 #include "../include/time.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
 
@@ -13,4 +14,9 @@ Time getRealTime() {
     Time timeNow = now.tv_sec + ((Time)now.tv_usec / 1000000.0L);
 
     return timeNow;
+}
+
+// Prints the elapsed time of given start and end times
+void printElapsedTime(Time start, Time end) {
+    printf("Elapsed time = %Lf", end - start);
 }

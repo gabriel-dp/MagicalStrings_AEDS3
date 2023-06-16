@@ -100,7 +100,7 @@ int KMP(char* substring, char* string, int reverse) {
 
         if (substring[k + 1] == string[i]) {
             k++;
-            if (i >= n - 1) {
+            if (i >= n - 1 && k < m - 1) {
                 while (substring[k + 1] == string[(i + 1) % n]) {
                     i++;
                     k++;

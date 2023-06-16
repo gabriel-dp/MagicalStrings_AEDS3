@@ -92,26 +92,26 @@ int KMP(char* substring, char* string, int reverse) {
 
     int* prefix = preprocessKMP(substring, m);
 
-    int k = -1;
+    int j = -1;
     for (int i = 0; i < n; i++) {
-        while (k > -1 && substring[k + 1] != string[i]) {
-            k = prefix[k];
+        while (j > -1 && substring[j + 1] != string[i]) {
+            j = prefix[j];
         }
 
-        if (substring[k + 1] == string[i]) {
-            k++;
-            if (i >= n - 1 && k < m - 1) {
-                while (substring[k + 1] == string[(i + 1) % n]) {
+        if (substring[j + 1] == string[i]) {
+            j++;
+            if (i >= n - 1 && j < m - 1) {
+                while (substring[j + 1] == string[(i + 1) % n]) {
                     i++;
-                    k++;
+                    j++;
                 }
             }
         }
 
-        if (k == m - 1) {
+        if (j == m - 1) {
             free(prefix);
             if (reverse) return i % n;
-            return (i - k) % n;
+            return (i - j) % n;
         }
     }
 

@@ -147,7 +147,7 @@ int BMH(char* substring, char* string, int reverse) {
 
     int fails = 0;
     int i = m, j, k;
-    while (i <= n || fails <= 2) {
+    while (i <= n || fails <= m) {
         k = i;
         j = m;
         while (j > 0 && k > 0 && string[(k - 1) % n] == substring[j - 1]) {

@@ -25,7 +25,7 @@ int solveStone(Stone stone, int pfunction(char* substring, char* string, int rev
 char* reverseString(char* string) {
     int length = strlen(string);
 
-    char* reverse = malloc(length + 1);
+    char* reverse = (char*)malloc(length + 1);
     strcpy(reverse, string);
 
     for (int i = 0; i < length / 2; i++) {
@@ -101,10 +101,23 @@ int KMP(char* substring, char* string, int reverse) {
         if (substring[j + 1] == string[i]) {
             j++;
             if (i >= n - 1 && j < m - 1) {
-                while (substring[j + 1] == string[(i + 1) % n]) {
-                    i++;
-                    j++;
+                i = m + n;
+                j = m - 1;
+                char* reverseSubstring = reverseString(substring);
+                prefix = preprocessKMP(reverseSubstring, m);
+                for (i = m + n - 1; i % n >= 0; i--) {
+                    while (j > -1 && substring[j - 1] != string[i % n]) {
+                        j = prefix[j];
+                    }
+                    if (substring[j - 1] == string[i % n]) {
+                        j--;
+                    }
+                    if (j == 0) {
+                        j = m - 1;
+                        break;
+                    }
                 }
+                free(reverseSubstring);
             }
         }
 
@@ -180,7 +193,7 @@ unsigned __int128* preprocessShiftAND(char* substring, int length) {
     unsigned __int128* masks = (unsigned __int128*)calloc(ALPHABET_CHARS, sizeof(unsigned __int128));
 
     for (int i = 0; i < length; i++) {
-        masks[((int)substring[i]) - ALPHABET_START] += (1 << (length - i - 1));
+        masks[((int)substring[i]) - ALPHABET_START] += (((__int128)1) << (length - i - 1));
     }
 
     return masks;
@@ -196,11 +209,11 @@ int shiftAND(char* substring, char* string, int reverse) {
     unsigned __int128 r = 0;
     for (int i = 0; i < n; i++) {
         do {
-            r = ((r >> 1) | (1 << (m - 1))) & masks[((int)string[i % n]) - ALPHABET_START];
+            r = ((r >> 1) | (((__int128)1) << (m - 1))) & masks[((int)string[i % n]) - ALPHABET_START];
             if (i + 1 >= n) {
                 i++;
             }
-        } while (i >= n && (r != 0) && (i % n == 0 || (r != (1 << (m - 1)))) && ((r & 1) == 0));
+        } while (i >= n && (r != 0) && (i % n == 0 || (r != (((__int128)1) << (m - 1)))) && ((r & 1) == 0));
 
         if ((r & 1) != 0) {
             free(masks);

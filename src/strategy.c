@@ -207,13 +207,15 @@ int shiftAND(char* substring, char* string, int reverse) {
     unsigned __int128* masks = preprocessShiftAND(substring, m);
 
     unsigned __int128 r = 0;
+    int fails = 0;
     for (int i = 0; i < n; i++) {
         do {
             r = ((r >> 1) | (((__int128)1) << (m - 1))) & masks[((int)string[i % n]) - ALPHABET_START];
             if (i + 1 >= n) {
                 i++;
+                fails++;
             }
-        } while (i >= n && (r != 0) && (i % n == 0 || (r != (((__int128)1) << (m - 1)))) && ((r & 1) == 0));
+        } while (i >= n && (r != 0) && (i % n == 0 || (r != (((__int128)1) << (m - 1)))) && ((r & 1) == 0) && fails <= m);
 
         if ((r & 1) != 0) {
             free(masks);

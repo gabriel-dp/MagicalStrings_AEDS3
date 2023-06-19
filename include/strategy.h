@@ -7,10 +7,10 @@
 #define ALPHABET_START 97
 
 enum strategy {
-    KMP_STRATEGY = 1,
+    BRUTEFORCE_STRATEGY = 1,
+    KMP_STRATEGY,
     BMH_STRATEGY,
     SHIFTAND_STRATEGY,
-    BRUTEFORCE_STRATEGY
 };
 
 int solveStone(Stone stone, int pfunction(char* substring, char* string, int reverse));

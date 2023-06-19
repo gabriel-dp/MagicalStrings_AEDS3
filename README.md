@@ -32,10 +32,10 @@ To run the program you need to provide:
 
 ---
 
-**Strategy 1** - KMP (Knuth-Morris-Pratt)
+**Strategy 1** - Brute Force
 
-**Strategy 2** - BMH (Boyer-Moore-Horspool)
+**Strategy 2** - KMP (Knuth-Morris-Pratt)
 
-**Strategy 3** - Shift-And
+**Strategy 3** - BMH (Boyer-Moore-Horspool)
 
-**Strategy 4** - Brute Force
+**Strategy 4** - Shift-And

@@ -1,6 +1,5 @@
 #include "../include/strategy.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -101,23 +100,10 @@ int KMP(char* substring, char* string, int reverse) {
         if (substring[j + 1] == string[i]) {
             j++;
             if (i >= n - 1 && j < m - 1) {
-                i = m + n;
-                j = m - 1;
-                char* reverseSubstring = reverseString(substring);
-                prefix = preprocessKMP(reverseSubstring, m);
-                for (i = m + n - 1; i % n >= 0; i--) {
-                    while (j > -1 && substring[j - 1] != string[i % n]) {
-                        j = prefix[j];
-                    }
-                    if (substring[j - 1] == string[i % n]) {
-                        j--;
-                    }
-                    if (j == 0) {
-                        j = m - 1;
-                        break;
-                    }
+                while (substring[j + 1] == string[(i + 1) % n]) {
+                    i++;
+                    j++;
                 }
-                free(reverseSubstring);
             }
         }
 

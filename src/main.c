@@ -5,6 +5,7 @@
 #include "../include/files.h"
 #include "../include/stone.h"
 #include "../include/strategy.h"
+#include "../include/thread.h"
 #include "../include/time.h"
 
 int main(int argc, char* argv[]) {
@@ -35,23 +36,13 @@ int main(int argc, char* argv[]) {
     // Receives inputStones and creates results array
     StoneArray inputStones = getStonesFromFile(inputPath);
     int* results = (int*)malloc(sizeof(int) * inputStones.length);
+    solveStoneArray(&inputStones, results, pfunction);
 
-    // Solves each stone
-    for (int i = 0; i < inputStones.length; i++) {
-        // Finds result monitoring the elapsed time
-        Time startTime = getRealTime();
-        results[i] = solveStone(inputStones.data[i], pfunction);
-        Time endTime = getRealTime();
-
-        // Prints result data
-        printf("Stone %d = (%d)\n", i + 1, results[i] + 1);
-        printElapsedTime(startTime, endTime);
-        printf("\n\n");
-    }
-
-    // Saves results on output and deallocates all data
+    // Saves results on output
     char* outputPath = generateOutputPath(inputPath);
     saveStonesFile(outputPath, results, inputStones.length);
+
+    // Deallocates all data
     freeStoneArray(&inputStones);
     free(results);
     free(outputPath);
